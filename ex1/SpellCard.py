@@ -8,7 +8,31 @@ class SpellCard(Card):
         self.effect_type = effect_type
 
     def play(self, game_state: Dict) -> Dict:
-        pass
+        can_play = self.is_playable(game_state["mana available"])
+
+        print(f"Playable: {can_play}")
+        if (can_play):
+            return {
+                "card_played": self.name,
+                "mana_used": self.cost,
+                "effect": "Deal 3 damage to target"
+            }
+        else:
+            return {
+                "card_played": None,
+                "mana_used": 0,
+                "effect": "No effect"
+            }
 
     def resolve_effect(self, targets: List) -> Dict:
-        pass
+        for target in targets:
+            try:
+                target.health -= 3
+            except AttributeError:
+                print(f"{target.name} is not a damageable card, skipping")
+        return {"this shit": "is ass"}
+
+    def get_card_info(self) -> Dict:
+        basic_info = super().get_card_info()
+        basic_info["type"] = "Spell"
+        return basic_info

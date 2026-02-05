@@ -26,7 +26,7 @@ class CreatureCard(Card):
                 "effect": "No effect"
             }
 
-    def get_card_info(self):
+    def get_card_info(self) -> Dict:
         basic_info = super().get_card_info()
         basic_info["type"] = "Creature"
         basic_info["attack"] = self.attack
