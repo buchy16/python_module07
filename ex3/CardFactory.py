@@ -13,7 +13,7 @@ class CardFactory(ABC):
         pass
 
     @abstractmethod
-    def creat_artifact(self, name_or_power: str | int | None = None) -> Card:
+    def create_artifact(self, name_or_power: str | int | None = None) -> Card:
         pass
 
     @abstractmethod
