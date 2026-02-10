@@ -5,11 +5,15 @@ from ex1 import SpellCard
 
 
 class AgressiveStrategy(GameStrategy):
-    def execute_turn(self, hand: List[Card], battlefield: List[Card], mana: int) -> Dict:
+    def execute_turn(self, hand: List[Card],
+                     battlefield: List[Card], mana: int) -> Dict:
         your_card: Card
         sorted_list = []
         cards_played = []
-        less_expensive_card = min([card.get_card_info()["cost"] for card in hand if card.get_card_info()["type"] == "Creature"])
+        less_expensive_card = min([card.get_card_info()["cost"]
+                                   for card in hand
+                                   if card.get_card_info()["type"]
+                                   == "Creature"])
         x = less_expensive_card - 1
         i = 0
         mana_start = mana
@@ -24,13 +28,13 @@ class AgressiveStrategy(GameStrategy):
                     sorted_list += cards
 
         # I calculate stats
-        card = sorted_list[i]
-        while (mana >= card.get_card_info()["cost"]):
+        card = None
+        while (card is None or (mana >= card.get_card_info()["cost"] and i < len(sorted_list))):
+            card = sorted_list[i]
             cards_played.append(card.get_card_info()["name"])
             mana -= card.get_card_info()["cost"]
             total_damage += card.get_card_info()["attack"]
             i += 1
-            card = sorted_list[i]
 
         # I apply stats
         i = 1
@@ -53,7 +57,7 @@ class AgressiveStrategy(GameStrategy):
 
         return {"cards_played": cards_played,
                 "mana_used": mana_start - mana,
-                "targets_attacked": battlefield,
+                "targets_attacked": [c.get_card_info()["name"] for c in battlefield if c.get_card_info()["type"] == "Creature"],
                 "damage_dealt": total_damage
                 }
 
@@ -63,7 +67,10 @@ class AgressiveStrategy(GameStrategy):
     def prioritize_targets(self, available_targets: List) -> Dict:
         i = 1
         sorted_list = []
-        most_dangerous_card = max([card.get_card_info()["health"] for card in available_targets if card.get_card_info()["type"] == "Creature"])
+        most_dangerous_card = max([card.get_card_info()["health"]
+                                   for card in available_targets
+                                   if card.get_card_info()["type"]
+                                   == "Creature"])
         x = most_dangerous_card + 1
 
         for target in available_targets:
@@ -73,18 +80,21 @@ class AgressiveStrategy(GameStrategy):
                     x = cards[0].get_card_info()["health"]
                     sorted_list += cards
                     i += 1
-        return {"target_" + str(i): sorted_list[i] for i in range(0, len(sorted_list))}
+        return {"target_" + str(i): sorted_list[i]
+                for i in range(0, len(sorted_list))}
 
     @staticmethod
     def max_under_x(list: List[Card], x: int) -> list:
         max = []
-        if (x <= min([card.get_card_info()["health"] for card in list if card.get_card_info()["type"] == "Creature"])):
+        if (x <= min([card.get_card_info()["health"] for card in list
+                      if card.get_card_info()["type"] == "Creature"])):
             return max
         for card in list:
             if (card.get_card_info()["type"] == "Creature"):
                 cost = card.get_card_info()["health"]
                 if (cost < x):
-                    if (max == [] or (cost > max[0].get_card_info()["health"])):
+                    if (max == [] or
+                       (cost > max[0].get_card_info()["health"])):
                         max = [card]
                     elif (cost == max[0].get_card_info()["health"]):
                         max += [card]
@@ -93,7 +103,8 @@ class AgressiveStrategy(GameStrategy):
     @staticmethod
     def min_over_x(list: List[Card], x: int) -> list:
         min = []
-        if (x >= max([card.get_card_info()["cost"] for card in list if card.get_card_info()["type"] == "Creature"])):
+        if (x >= max([card.get_card_info()["cost"] for card in list
+                      if card.get_card_info()["type"] == "Creature"])):
             return min
         for card in list:
             if (card.get_card_info()["type"] == "Creature"):
