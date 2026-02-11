@@ -10,56 +10,65 @@ class AgressiveStrategy(GameStrategy):
         your_card: Card
         sorted_list = []
         cards_played = []
-        less_expensive_card = min([card.get_card_info()["cost"]
-                                   for card in hand
-                                   if card.get_card_info()["type"]
-                                   == "Creature"])
-        x = less_expensive_card - 1
+        targets_attacked = []
+        creatur_cards = [card.get_card_info()["cost"]
+                         for card in hand
+                         if card.get_card_info()["type"] == "Creature"]
         i = 0
         mana_start = mana
         total_damage = 0
 
-        # I sort card from their mana cost
-        for your_card in hand:
-            if (your_card.get_card_info()["type"] == "Creature"):
-                cards = self.min_over_x(hand, x)
-                if (cards != []):
-                    x = cards[0].get_card_info()["cost"]
-                    sorted_list += cards
+        try:
+            less_expensive_card = min(creatur_cards)
+            enemy_cards = [card for card in
+                           self.prioritize_targets(battlefield).values()]
+            x = less_expensive_card - 1
+            # I sort card from their mana cost
+            for your_card in hand:
+                if (your_card.get_card_info()["type"] == "Creature"):
+                    cards = self.min_over_x(hand, x)
+                    if (cards != []):
+                        x = cards[0].get_card_info()["cost"]
+                        sorted_list += cards
 
-        # I calculate stats
-        card = None
-        while (card is None or (mana >= card.get_card_info()["cost"] and i < len(sorted_list))):
-            card = sorted_list[i]
-            cards_played.append(card.get_card_info()["name"])
-            mana -= card.get_card_info()["cost"]
-            total_damage += card.get_card_info()["attack"]
-            i += 1
+            # I calculate stats
+            while (i < len(sorted_list)):
+                card = sorted_list[i]
+                if (mana >= card.get_card_info()["cost"]):
+                    cards_played.append(card.get_card_info()["name"])
+                    mana -= card.get_card_info()["cost"]
+                    total_damage += card.get_card_info()["attack"]
+                i += 1
 
-        # I apply stats
-        i = 1
-        end = len(battlefield)
-        while (total_damage > 0 and len(battlefield) != 0 and i <= end):
-            enemy_card = battlefield.pop(0)
-
-            if (enemy_card.get_card_info()["type"] == "Creature"):
-                if (enemy_card.get_card_info()["health"] <= total_damage):
-                    print("Hee")
-                    total_damage -= enemy_card.health
-                    del enemy_card
+            # I apply stats
+            i = 1
+            damage = total_damage
+            for enemy_card in enemy_cards:
+                if (damage > 0):
+                    targets_attacked.append(enemy_card.get_card_info()["name"])
+                if (enemy_card.get_card_info()["health"] <= damage):
+                    damage -= enemy_card.get_card_info()["health"]
+                    # print("==== remove theme please, I beg you ====")
+                    battlefield.remove(enemy_card)
                 else:
-                    enemy_card.health -= total_damage
-                    total_damage = 0
-                    battlefield.append(enemy_card)
-            else:
-                battlefield.append(enemy_card)
-            i += 1
+                    index = self.find_in_hand(battlefield, enemy_card)
+                    battlefield[index].health -= damage
+                    damage = 0
 
-        return {"cards_played": cards_played,
-                "mana_used": mana_start - mana,
-                "targets_attacked": [c.get_card_info()["name"] for c in battlefield if c.get_card_info()["type"] == "Creature"],
-                "damage_dealt": total_damage
-                }
+        except ValueError:
+            if (len(sorted_list) == 0):
+                print("AgressiveStartegy can't be used, \
+no creature card in your hand")
+            else:
+                print("AgressiveStartegy can't be used, \
+no creature to attack")
+
+        finally:
+            return {"cards_played": cards_played,
+                    "mana_used": mana_start - mana,
+                    "targets_attacked": targets_attacked,
+                    "damage_dealt": total_damage - damage
+                    }
 
     def get_strategy_name(self) -> str:
         return "AggressiveStrategy"
@@ -115,6 +124,12 @@ class AgressiveStrategy(GameStrategy):
                     elif (cost == min[0].get_card_info()["cost"]):
                         min += [card]
         return [card for card in min]
+
+    @staticmethod
+    def find_in_hand(hand: List[Card], card: Card) -> int:
+        for i in range(0, len(hand)):
+            if (card == hand[i]):
+                return i
 
 
 if (__name__ == "__main__"):

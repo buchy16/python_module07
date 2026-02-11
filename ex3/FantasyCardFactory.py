@@ -69,7 +69,12 @@ class FantasyCardFactory(CardFactory):
             method = choice([self.create_creature(), self.create_spell(),
                              self.create_artifact()])
             card = method
-            hand[card.get_card_info()["name"]] = card
+            try:
+                name = card.get_card_info()["name"]
+                hand[name] = card
+            except AttributeError:
+                print("Error while choosing a card, \
+card selected was not a valide card, skipping it")
             k += 1
         return hand
 
