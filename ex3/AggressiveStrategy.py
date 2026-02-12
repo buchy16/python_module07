@@ -1,7 +1,6 @@
 from typing import Dict, List
 from ex3 import GameStrategy
-from ex0 import Card, CreatureCard, Rarity
-from ex1 import SpellCard
+from ex0 import Card
 
 
 class AgressiveStrategy(GameStrategy):
@@ -130,28 +129,3 @@ no creature to attack")
         for i in range(0, len(hand)):
             if (card == hand[i]):
                 return i
-
-
-if (__name__ == "__main__"):
-    strat = AgressiveStrategy()
-
-    hand = [
-        CreatureCard("Dragon", 5, Rarity.LEGENDARY.value, 7, 6),
-        CreatureCard("Goblin", 3, Rarity.COMMON.value, 2, 3),
-        CreatureCard('Goblin Warrior', 2, Rarity.RARE.value, 3, 4),
-        CreatureCard("Knight", 5, Rarity.COMMON.value, 3, 6),
-        SpellCard("Fireball", 4, Rarity.RARE.value, "splash damage"),
-        CreatureCard("Golden Knight", 5, Rarity.EPIC.value, 5, 6),
-        CreatureCard("Surrind King", 6, Rarity.LEGENDARY.value, 6, 8)
-    ]
-
-    target = [
-        CreatureCard("Surrind King", 6, Rarity.LEGENDARY.value, 6, 8),
-        CreatureCard("Surrind King", 6, Rarity.LEGENDARY.value, 6, 8)
-    ]
-
-    # print(AgressiveStrategy().prioritize_targets(hand))
-    # print(AgressiveStrategy().max_under_x(hand, 6))
-    # print(AgressiveStrategy().min_over_x(hand, 1))
-    print(AgressiveStrategy().execute_turn(hand, target, 10))
-    print([Target.health for Target in target])

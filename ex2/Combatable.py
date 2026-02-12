@@ -1,13 +1,14 @@
 from abc import ABC, abstractmethod
 from typing import Dict
+from ex0 import Card
 
 
 class Combatable(ABC):
-    def __init__(self, attack: int):
+    def __init__(self, attack: int) -> None:
         self.attck = attack
 
     @abstractmethod
-    def attack(self, target) -> Dict:
+    def attack(self, target: Card) -> Dict:
         pass
 
     @abstractmethod

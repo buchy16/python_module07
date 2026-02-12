@@ -4,12 +4,12 @@ from typing import Dict
 
 class CreatureCard(Card):
     def __init__(self, name: str, cost: int,
-                 rarity: str, attack: int, health: int):
+                 rarity: str, attack: int, health: int) -> None:
         super().__init__(name, cost, rarity)
         self.attack = attack
         self.health = health
 
-    def play(self, game_state) -> Dict:
+    def play(self, game_state: Dict) -> Dict:
         can_play = self.is_playable(game_state.get('mana available'))
         print(f"Playable:{can_play}")
 
@@ -33,7 +33,7 @@ class CreatureCard(Card):
         basic_info["health"] = self.health
         return basic_info
 
-    def attack_target(self, target) -> Dict:
+    def attack_target(self, target: Card) -> Dict:
         try:
             target.health -= self.attack
             return {

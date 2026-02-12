@@ -13,7 +13,7 @@ class Efficacity(Enum):
 
 class EliteCard(Card, Combatable, Magical):
     def __init__(self, name: str, cost: int, rarity: str,
-                 damage: int, health: int):
+                 damage: int, health: int) -> None:
         super().__init__(name, cost, rarity)
         self.damage = damage
         self.health = health
@@ -45,7 +45,7 @@ class EliteCard(Card, Combatable, Magical):
 # =============================================================================
 # ================================== Combatable ===============================
 # =============================================================================
-    def attack(self, target) -> Dict:
+    def attack(self, target: Card) -> Dict:
         try:
             # if the card is an Elit Card, his ability "defend" will be used
             if (target.get_card_info()["type"] == "Elite Card"):

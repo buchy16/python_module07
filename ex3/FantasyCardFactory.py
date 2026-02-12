@@ -80,15 +80,3 @@ card selected was not a valide card, skipping it")
 
     def get_supported_types(self) -> Dict:
         return {types: list(card.keys()) for types, card in data.items()}
-
-
-if (__name__ == "__main__"):
-    print("=== Testing FantasyCardFactory ===\n")
-
-    card = FantasyCardFactory().create_artifact("")
-    print(card.get_card_info())
-    print()
-    print(f"All types: {FantasyCardFactory().get_supported_types()}\n")
-    hand = FantasyCardFactory().create_themed_deck(4)
-    hand_list = [value.get_card_info()['name'] for value in hand.values()]
-    print(f"Hand: {hand_list}, {len(hand_list)}")

@@ -18,7 +18,7 @@ data_test = [
 
 
 class GameEngine():
-    def __init__(self):
+    def __init__(self) -> None:
         self.strategy = "No strategy used"
         self.turn = 0
         self.factory = None

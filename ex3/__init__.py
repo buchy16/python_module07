@@ -4,7 +4,7 @@ from ex3.CardFactory import CardFactory
 from ex3.FantasyCardFactory import FantasyCardFactory
 from ex3.GameEngine import GameEngine
 
-__version__ = "1.12.3"
+__version__ = "1.13"
 __author__ = "Mojang"
 __all__ = [
         "GameStrategy",
